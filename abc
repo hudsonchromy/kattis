@@ -1,0 +1,9 @@
+if __name__=="__main__":
+    list_num = raw_input()#.split()
+    list_num = map(int, list_num.split(" "))    
+    list_num.sort(key=int)
+    list_let = raw_input()
+    #print(list_num)
+    dict_ = {'A':list_num[0], 'B':list_num[1], 'C':list_num[2]}
+    #print(dict_)
+    print(str(dict_[list_let[0]]) + " " + str(dict_[list_let[1]]) + " " + str(dict_[list_let[2]]))
