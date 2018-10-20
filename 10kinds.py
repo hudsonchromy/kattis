@@ -1,46 +1,38 @@
-ysize, xsize = map(int, input().split())
-graphIn = []
-for i in range(0, ysize):
-	graphIn.append(list(input()))
-graph = dict({})
-for y in range(0, ysize):
-	for x in range(0, xsize):
-		edges = set()
-		#print('here')
-		if(y-1 >= 0 and graphIn[y][x] == graphIn[y-1][x]):
-			edges.add((y-1, x))
-		if(y+1 < ysize and graphIn[y][x] == graphIn[y+1][x]):
-			edges.add((y+1, x))
-		if(x-1 >= 0 and graphIn[y][x] == graphIn[y][x-1]):
-			edges.add((y, x-1))
-		if(x+1 < xsize and graphIn[y][x] == graphIn[y][x+1]):
-			edges.add((y, x+1))
-		graph[(y,x)] = edges
+def find(l, x):
+	while(x != l[x]):
+		x = l[x]
+	return(x)
 
-def dfs(graph, start, looking):
-	if(looking not in graph or start not in graph):
-		return False
-	if(start == looking):
-		return True
-	visited, stack = set(), [start]
-	while stack:
-		vertex = stack.pop()
-		if vertex not in visited:
-			if(vertex == looking):
-				return True
-			visited.add(vertex)
-			#print(graph[vertex])
-			#print(visited)
-			stack.extend(graph[vertex] - visited)
-	return False
+def unite(l, s, a, b):
+	a = find(l, a)
+	b = find(l, b)
+	if(a == b):
+		return
+	if(s[a] < s[b]):
+		a, b = b, a
+	s[a] += s[b]
+	l[b] = a
 
-cases = int(input())
-for i in range(0, cases):
-	y1, x1, y2, x2 = map(int, input().split())
-	booling = dfs(graph, (y1-1, x1-1), (y2-1, x2-1))
-	if(booling == False):
-		print("neither")
-	elif(graphIn[y1-1][x1-1] == '1'):
-		print("decimal")
+rows, columns = map(int, input().split())
+l = [i for i in range(rows * columns)]
+s = [1] * rows * columns
+a = [None] * rows
+for i in range(rows):
+	a[i] = list(map(int, list(input())))
+
+for i in range(0, rows):
+	for j in range(0, columns):
+		if(j < columns-1 and a[i][j] == a[i][j+1]):
+			unite(l, s, i * columns + j, i * columns + j + 1)
+		if(i < rows-1 and a[i][j] == a[i + 1][j]):
+			unite(l, s, i * columns + j, (i + 1) * columns + j)
+#print(l)
+qs = int(input())
+for _ in range(0, qs):
+	r1, c1, r2, c2 = [int(x) - 1 for x in input().split()]
+	#print()
+	if(find(l, r1 * columns + c1) == find(l, r2 * columns + c2)):
+		print('decimal' if a[r1][c1] else 'binary')
 	else:
-		print("binary")
+		print('neither')
+
